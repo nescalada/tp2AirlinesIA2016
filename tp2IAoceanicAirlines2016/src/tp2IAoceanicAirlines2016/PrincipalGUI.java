@@ -131,7 +131,7 @@ public class PrincipalGUI {
             else{          
             
 	            //Crea una consulta con QueryUtils (nombre echo o regla, parametro1, parametro2)
-            	String query = "calculaRutaPA('"+cmboxOrigen.getSelectedItem()+"', '"+cmboxDestino.getSelectedItem()+"', Ruta, DistanciaRecorrida)";
+            	String query = "calculaRutaPP('"+cmboxOrigen.getSelectedItem()+"', '"+cmboxDestino.getSelectedItem()+"', Ruta, DistanciaRecorrida)";
 	            	
 	            // Devuelve todos los resultados en una lista
 	            // Cada elemento en la lista es un resultado
