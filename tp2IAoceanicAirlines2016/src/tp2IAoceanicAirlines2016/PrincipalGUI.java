@@ -22,6 +22,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.ImageIcon;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JTable;
 
 public class PrincipalGUI {
 
@@ -53,6 +54,8 @@ public class PrincipalGUI {
 	public PrincipalGUI() {
 		initialize();
 	}
+	
+	
 
 	/**
 	 * Initialize the contents of the frame.
@@ -60,7 +63,7 @@ public class PrincipalGUI {
 	private void initialize() {
 		frame = new JFrame();
 		frame.setIconImage(Toolkit.getDefaultToolkit().getImage(PrincipalGUI.class.getResource("/tp2IAoceanicAirlines2016/Recursos/Airplane.png")));
-		frame.setBounds(100, 100, 312, 282);
+		frame.setBounds(100, 100, 316, 282);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
@@ -106,28 +109,52 @@ public class PrincipalGUI {
 
             //Carga la base de echos y reglas
             cargarBaseDeEchosYReglas(process);
-
-            //Crea una consulta con QueryUtils (nombre echo o regla, parametro1, parametro2)
-            String query = "calculaRutaPP('"+cmboxOrigen.getSelectedItem()+"', '"+cmboxDestino.getSelectedItem()+"', Ruta, DistanciaRecorrida)";
-
-            // Devuelve todos los resultados en una lista
-            // Cada elemento en la lista es un resultado
-            // Si la consulta falla la lista estará vacía (pero no sera nula)
-            List<Map<String, Object>> results = process.queryAll(query);
-            if(results.isEmpty()){
-            	System.out.println("No se obtuvieron resultados.");
+            
+            if(chckbxPrefieroPocosTransbordos.isSelected()){
+            
+	            //Crea una consulta con QueryUtils (nombre echo o regla, parametro1, parametro2)
+            	String query = "calculaRutaPA('"+cmboxOrigen.getSelectedItem()+"', '"+cmboxDestino.getSelectedItem()+"', Ruta, DistanciaRecorrida)";
+	           
+	            Map<String, Object> result = process.queryOnce(query);
+	            if (result == null) {
+	                // if the result is null, the query failed (no results)
+	                System.out.println("No hay una ruta recomendada");
+	            } else {
+	            	
+	            	System.out.println("Mejor ruta encontrada:");
+	                // if the query succeeds, the resulting map contains mappings
+	                // from variable name to the binding
+	            	System.out.println("Ruta óptima, "+result.get("DistanciaRecorrida").toString()+"km: "+ result.get("Ruta").toString());
+	            }
+            
             }
+            else{          
             
-            //System.out.println(results.toString());
-            System.out.println(results.size() + " rutas distintas");
-            
-            //con lo anterior se puede saber si la consulta devuelve vacio
-            for (Map<String, Object> r : results) {
-                //Itera sobre cada resultado
-                System.out.println(r.get("Ruta")+" "+r.get("DistanciaRecorrida"));
+	            //Crea una consulta con QueryUtils (nombre echo o regla, parametro1, parametro2)
+            	String query = "calculaRutaPA('"+cmboxOrigen.getSelectedItem()+"', '"+cmboxDestino.getSelectedItem()+"', Ruta, DistanciaRecorrida)";
+	            	
+	            // Devuelve todos los resultados en una lista
+	            // Cada elemento en la lista es un resultado
+	            // Si la consulta falla la lista estará vacía (pero no sera nula)
+	            List<Map<String, Object>> results = process.queryAll(query);
+	            if(results.isEmpty()){
+	            	System.out.println("No se obtuvieron resultados.");
+	            }
+	            
+	            if(results.size()>1){
+	            //System.out.println(results.toString());
+	            	System.out.println(results.size() + " rutas encontradas:");
+	            }else{
+	            	System.out.println(results.size() + " ruta encontrada:");
+	            }
+	            int nRuta=0;
+	            for (Map<String, Object> r : results) {
+	                // iterate over every result
+	            	System.out.println("Ruta"+nRuta+", "+r.get("DistanciaRecorrida")+"km: "+r.get("Ruta"));
+	                nRuta++;
+	            }
             }
-            
-            
+
         } catch (PrologException a){
         	// TODO Auto-generated catch block
         	JOptionPane.showMessageDialog(null, "Verifique:\nLa existencia de su archivo .pl en el classpath de la aplicación.\nLa existencia de echos y reglas en su archivo .pl.\nQue swiprolog esté actualizado.", "ERROR AL INTENTAR LEER ARCHIVO PROLOG", JOptionPane.ERROR_MESSAGE);

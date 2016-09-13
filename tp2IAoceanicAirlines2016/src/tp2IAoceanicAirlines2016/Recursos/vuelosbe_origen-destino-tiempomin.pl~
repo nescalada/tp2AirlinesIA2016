@@ -21,16 +21,16 @@ vuelo('Neuquen','Calafate',65).
 
 
 %BUSQUEDA PRIMERO EN PROFUNDIDAD:
-calculaRutaPP(Inicio, Meta, Sol2):- buscarRutaPA(Inicio,Meta,[Inicio],Sol),reverse(Sol,Sol2),distanciaRecorrida(Sol2,0,Total),write(Total),write(Sol2).
+calculaRutaPP(Inicio, Meta, Sol2, Total):- buscarRutaPP(Inicio,Meta,[Inicio],Sol),reverse(Sol,Sol2),distanciaRecorrida(Sol2,0,Total), write(Total),write(Sol2).
 % si el estado actual es la meta, devolver la ruta recorrida como
 % solución
-buscarRutaPA(Estado, Meta, Ruta, Ruta):-(Estado = Meta).
+buscarRutaPP(Estado, Meta, Ruta, Ruta):-(Estado = Meta).
 % Generar un sucesor del estado actual. Si no fue visitado agregarlo a
 % la ruta
-buscarRutaPA(Estado, Meta, Ruta, Sol):-
+buscarRutaPP(Estado, Meta, Ruta, Sol):-
 	sucesor(Estado, NuevoEstado),
 	not(pertenece(NuevoEstado, Ruta)),
-	buscarRutaPA(NuevoEstado, Meta, [NuevoEstado|Ruta], Sol).
+	buscarRutaPP(NuevoEstado, Meta, [NuevoEstado|Ruta], Sol).
 
 %BUSQUEDA PRIMERO EN ANCHURA
 calculaRutaPA(Inicio, Meta, Sol2,Total):- buscarRutaPA([[Inicio]],Meta,Sol),reverse(Sol, Sol2),distanciaRecorrida(Sol2,0,Total), write(Total),write(Sol2).
@@ -41,6 +41,7 @@ buscarRutaPA([[Estado|Ruta]|_],Meta,[Estado|Ruta]):-(Estado=Meta).
 % Generar las rutas sucesoras y las agrega a Lista-Nodos, descargando la
 % primera
 buscarRutaPA([PrimerRuta|OtrasRutas], Meta, Sol):-
+	(PrimerRuta\=OtrasRutas),
 	expandir(PrimerRuta,NuevasRutas),
 	concatenar(OtrasRutas,NuevasRutas,NuevaListaNodos),
 	buscarRutaPA(NuevaListaNodos,Meta,Sol).
@@ -73,4 +74,4 @@ pertenece(E,[_|T]):-pertenece(E,T).
 distanciaRecorrida([],Total,Total).
 distanciaRecorrida([H1,H2|T],Suma,Total):-(vuelo(H1,H2,Distancia);vuelo(H2,H1,Distancia)),
 	                                  Suma2 is Suma +Distancia,distanciaRecorrida([H2|T],Suma2,Total).
-distanciaRecorrida([_|_],Total,Total).
+distanciaRecorrida([_|[]],Total,Total).
