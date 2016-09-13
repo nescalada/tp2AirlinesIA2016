@@ -73,12 +73,12 @@ public class PrincipalGUI {
 		frame.getContentPane().add(lblDestino);
 		
 		cmboxOrigen = new JComboBox();
-		cmboxOrigen.setModel(new DefaultComboBoxModel(new String[] {"Rosario", "Buenos Aires"}));
+		cmboxOrigen.setModel(new DefaultComboBoxModel(new String[] {"Salta", "Cordoba", "Formosa", "Corrientes", "Posadas", "Santa Fe", "Rosario", "Mendoza", "Buenos Aires", "Neuquen", "Calafate", "Parana", "Santa Fe", "Puerto Madryn"}));
 		cmboxOrigen.setBounds(110, 24, 167, 26);
 		frame.getContentPane().add(cmboxOrigen);
 		
 		cmboxDestino = new JComboBox();
-		cmboxDestino.setModel(new DefaultComboBoxModel(new String[] {"Mendoza", "Neuquen"}));
+		cmboxDestino.setModel(new DefaultComboBoxModel(new String[] {"Salta", "Cordoba", "Formosa", "Corrientes", "Posadas", "Santa Fe", "Rosario", "Mendoza", "Buenos Aires", "Neuquen", "Calafate", "Parana", "Santa Fe", "Puerto Madryn"}));
 		cmboxDestino.setBounds(110, 74, 167, 26);
 		frame.getContentPane().add(cmboxDestino);
 		
@@ -108,7 +108,7 @@ public class PrincipalGUI {
             cargarBaseDeEchosYReglas(process);
 
             //Crea una consulta con QueryUtils (nombre echo o regla, parametro1, parametro2)
-            String query = "calculaRutaPP('"+cmboxOrigen.getSelectedItem()+"', '"+cmboxDestino.getSelectedItem()+"', Ruta)";
+            String query = "calculaRutaPP('"+cmboxOrigen.getSelectedItem()+"', '"+cmboxDestino.getSelectedItem()+"', Ruta, DistanciaRecorrida)";
 
             // Devuelve todos los resultados en una lista
             // Cada elemento en la lista es un resultado
@@ -124,7 +124,7 @@ public class PrincipalGUI {
             //con lo anterior se puede saber si la consulta devuelve vacio
             for (Map<String, Object> r : results) {
                 //Itera sobre cada resultado
-                System.out.println((r.get("Ruta")));
+                System.out.println(r.get("Ruta")+" "+r.get("DistanciaRecorrida"));
             }
             
             

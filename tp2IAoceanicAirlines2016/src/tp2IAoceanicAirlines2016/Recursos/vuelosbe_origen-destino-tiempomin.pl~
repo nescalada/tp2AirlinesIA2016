@@ -21,7 +21,7 @@ vuelo('Neuquen','Calafate',65).
 
 
 %BUSQUEDA PRIMERO EN PROFUNDIDAD:
-calculaRutaPP(Inicio, Meta, Sol2, Total):- buscarRutaPA(Inicio,Meta,[Inicio],Sol),reverse(Sol,Sol2),distanciaRecorrida(Sol2,0,Total),write(Sol2).
+calculaRutaPP(Inicio, Meta, Sol2):- buscarRutaPA(Inicio,Meta,[Inicio],Sol),reverse(Sol,Sol2),distanciaRecorrida(Sol2,0,Total),write(Total),write(Sol2).
 % si el estado actual es la meta, devolver la ruta recorrida como
 % solución
 buscarRutaPA(Estado, Meta, Ruta, Ruta):-(Estado = Meta).
