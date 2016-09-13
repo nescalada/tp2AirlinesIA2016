@@ -17,7 +17,7 @@ vuelo('Santa Fe','Rosario',30).
 vuelo('Rosario','Parana',25).
 vuelo('Rosario','Buenos Aires',55).
 vuelo('Rosario','Mendoza',175).
-vuelo('Mendoza','Buenos Aires',85).
+vuelo('Mendoza', 'Buenos Aires',85).
 vuelo('Mendoza','Neuquen',83).
 vuelo('Neuquen', 'Buenos Aires',90).
 vuelo('Buenos Aires','Calafate',115).
@@ -25,3 +25,51 @@ vuelo('Buenos Aires', 'Puerto Madryn',75).
 vuelo('Neuquen','Calafate',65).
 
 
+tienePadre(Hijo):-father_of(_,Hijo).
+
+%BUSQUEDA PRIMERO EN PROFUNDIDAD:
+calculaRutaPP(Inicio, Meta, Sol2):- buscarRutaPA(Inicio,Meta,[Inicio],Sol),reverse(Sol,Sol2), write(Sol2).
+% si el estado actual es la meta, devolver la ruta recorrida como
+% solución
+buscarRutaPA(Estado, Meta, Ruta, Ruta):-(Estado = Meta).
+% Generar un sucesor del estado actual. Si no fue visitado agregarlo a
+% la ruta
+buscarRutaPA(Estado, Meta, Ruta, Sol):-
+	sucesor(Estado, NuevoEstado),
+	not(pertenece(NuevoEstado, Ruta)),
+	buscarRutaPA(NuevoEstado, Meta, [NuevoEstado|Ruta], Sol).
+
+%BUSQUEDA PRIMERO EN ANCHURA
+calculaRutaPA(Inicio, Meta, Sol2):- buscarRutaPA([[Inicio]],Meta,Sol),reverse(Sol, Sol2),write(Sol2).
+% si el estado actual es la meta, devolver la ruta al mismo
+% solución
+buscarRutaPA([[Estado|Ruta]|_],Meta,[Estado|Ruta]):-(Estado=Meta).
+
+% Generar las rutas sucesoras y las agrega a Lista-Nodos, descargando la
+% primera
+buscarRutaPA([PrimerRuta|OtrasRutas], Meta, Sol):-
+	expandir(PrimerRuta,NuevasRutas),
+	concatenar(OtrasRutas,NuevasRutas,NuevaListaNodos),
+	buscarRutaPA(NuevaListaNodos,Meta,Sol).
+
+%concatenar
+concatenar([],[],[]).
+concatenar([H1|T1],L2,[H1|T3]):-concatenar(T1,L2,T3).
+concatenar([],[H2|T2],[H2|T3]):-concatenar([],T2,T3).
+
+%generamos las rutas sucesoras
+
+expandir([Estado|Ruta],NuevasRutas):-
+	findall([NuevoEstado,Estado|Ruta],
+		 (sucesor(Estado, NuevoEstado),
+		  not(pertenece(NuevoEstado, [Estado|Ruta]))),
+		  NuevasRutas).
+
+%expandir si no hay rutas sucesoras
+expandir(_,[]).
+
+
+sucesor(Estado, NuevoEstado):-vuelo(Estado, NuevoEstado,_); vuelo(NuevoEstado, Estado,_).
+
+pertenece(E,[E|_]).
+pertenece(E,[_|T]):-pertenece(E,T).

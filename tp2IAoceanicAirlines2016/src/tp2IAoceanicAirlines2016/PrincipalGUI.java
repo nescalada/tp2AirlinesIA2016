@@ -21,10 +21,15 @@ import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.ImageIcon;
+import javax.swing.DefaultComboBoxModel;
 
 public class PrincipalGUI {
 
 	private JFrame frame;
+	private JComboBox cmboxOrigen;
+	private JComboBox cmboxDestino;
+	private JCheckBox chckbxPrefieroPocosTransbordos;
+	private JButton btnsolicitarRecomendacin;
 
 	/**
 	 * Launch the application.
@@ -67,19 +72,21 @@ public class PrincipalGUI {
 		lblDestino.setBounds(15, 77, 69, 20);
 		frame.getContentPane().add(lblDestino);
 		
-		JComboBox cmboxOrigen = new JComboBox();
+		cmboxOrigen = new JComboBox();
+		cmboxOrigen.setModel(new DefaultComboBoxModel(new String[] {"Rosario", "Buenos Aires"}));
 		cmboxOrigen.setBounds(110, 24, 167, 26);
 		frame.getContentPane().add(cmboxOrigen);
 		
-		JComboBox cmboxDestino = new JComboBox();
+		cmboxDestino = new JComboBox();
+		cmboxDestino.setModel(new DefaultComboBoxModel(new String[] {"Mendoza", "Neuquen"}));
 		cmboxDestino.setBounds(110, 74, 167, 26);
 		frame.getContentPane().add(cmboxDestino);
 		
-		JCheckBox chckbxPrefieroPocosTransbordos = new JCheckBox("Prefiero pocos transbordos");
+		chckbxPrefieroPocosTransbordos = new JCheckBox("Prefiero pocos transbordos");
 		chckbxPrefieroPocosTransbordos.setBounds(15, 119, 262, 29);
 		frame.getContentPane().add(chckbxPrefieroPocosTransbordos);
 		
-		JButton btnsolicitarRecomendacin = new JButton("  \u00A1Solicitar recomendaci\u00F3n!");
+		btnsolicitarRecomendacin = new JButton("  \u00A1Solicitar recomendaci\u00F3n!");
 		btnsolicitarRecomendacin.setIcon(new ImageIcon(PrincipalGUI.class.getResource("/tp2IAoceanicAirlines2016/Recursos/Airplane.png")));
 		btnsolicitarRecomendacin.addMouseListener(new MouseAdapter() {
 			@Override
@@ -97,37 +104,33 @@ public class PrincipalGUI {
         try {
             PrologProcess process = Connector.newPrologProcess();
 
-            //Establece la base de echos
+            //Carga la base de echos y reglas
             cargarBaseDeEchosYReglas(process);
 
-            // Crea una consulta con el método buildTerm
-            // esto es lo mismo que "father_of(Father, peter)"
-            String query = QueryUtils.bT("father_of", "Father", "peter");
-            // Toma el primer resultado de la consulta e ignora si hay otros
-            Map<String, Object> result = process.queryOnce(query);
-            if (result == null) {
-                //Si el resultado es nulo falla la consulta
-                System.out.println("peter has no father");
-            } else {
-                // Si la consula tiene resultados se mapea y se muestra el dato embebido
-                System.out.println(result.get("Father") + " is the father of peter");
-            }
+            //Crea una consulta con QueryUtils (nombre echo o regla, parametro1, parametro2)
+            String query = "calculaRutaPP('"+cmboxOrigen.getSelectedItem()+"', '"+cmboxDestino.getSelectedItem()+"', Ruta)";
 
-            // Otra consulta: father_of(john, Child)
-            query = QueryUtils.bT("father_of", "john", "Child");
             // Devuelve todos los resultados en una lista
             // Cada elemento en la lista es un resultado
             // Si la consulta falla la lista estará vacía (pero no sera nula)
             List<Map<String, Object>> results = process.queryAll(query);
-            //System.out.println(results.isEmpty());
+            if(results.isEmpty()){
+            	System.out.println("No se obtuvieron resultados.");
+            }
+            
+            //System.out.println(results.toString());
+            System.out.println(results.size() + " rutas distintas");
+            
             //con lo anterior se puede saber si la consulta devuelve vacio
             for (Map<String, Object> r : results) {
                 //Itera sobre cada resultado
-                System.out.println(r.get("Child") + " is a child of john");
+                System.out.println((r.get("Ruta")));
             }
+            
+            
         } catch (PrologException a){
         	// TODO Auto-generated catch block
-        				JOptionPane.showMessageDialog(null, "Verifique:\nLa existencia de su archivo .pl en el classpath de la aplicación.\nLa existencia de echos y reglas en su archivo .pl.\nQue swiprolog esté actualizado.", "ERROR AL INTENTAR LEER ARCHIVO PROLOG", JOptionPane.ERROR_MESSAGE);
+        	JOptionPane.showMessageDialog(null, "Verifique:\nLa existencia de su archivo .pl en el classpath de la aplicación.\nLa existencia de echos y reglas en su archivo .pl.\nQue swiprolog esté actualizado.", "ERROR AL INTENTAR LEER ARCHIVO PROLOG", JOptionPane.ERROR_MESSAGE);
         }catch (Exception e) {
             e.printStackTrace();
         }
