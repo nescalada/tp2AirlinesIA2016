@@ -121,10 +121,10 @@ public class PrincipalGUI {
 	                System.out.println("No hay una ruta recomendada");
 	            } else {
 	            	
-	            	System.out.println("Mejor ruta encontrada:");
+	            	System.out.println("Ruta con menores transbordos (primero en anchura):");
 	                // if the query succeeds, the resulting map contains mappings
 	                // from variable name to the binding
-	            	System.out.println("Ruta óptima, "+result.get("DistanciaRecorrida").toString()+"km: "+ result.get("Ruta").toString());
+	            	System.out.println("Ruta0, "+result.get("DistanciaRecorrida").toString()+"min: "+ result.get("Ruta").toString());
 	            }
             
             }
@@ -143,14 +143,14 @@ public class PrincipalGUI {
 	            
 	            if(results.size()>1){
 	            //System.out.println(results.toString());
-	            	System.out.println(results.size() + " rutas encontradas:");
+	            	System.out.println(results.size() + " rutas encontradas (primero en profundidad):");
 	            }else{
-	            	System.out.println(results.size() + " ruta encontrada:");
+	            	System.out.println(results.size() + " ruta encontrada (primero en profundidad):");
 	            }
 	            int nRuta=0;
 	            for (Map<String, Object> r : results) {
 	                // iterate over every result
-	            	System.out.println("Ruta"+nRuta+", "+r.get("DistanciaRecorrida")+"km: "+r.get("Ruta"));
+	            	System.out.println("Ruta"+nRuta+", "+r.get("DistanciaRecorrida")+"min: "+r.get("Ruta"));
 	                nRuta++;
 	            }
             }
